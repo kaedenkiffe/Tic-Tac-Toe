@@ -12,78 +12,95 @@ public class TicTacToe
     }
 
     public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
-        String playerOne;
-        String playerTwo;
-        System.out.println("Hello Players");
-        System.out.println("Enter Player one's name");
-        playerOne = input.next();
-        System.out.println("Enter Player two's name");
-        playerTwo = input.next();
-        System.out.println("Tic-Tac-Toe:" + playerOne + " vs "+ playerTwo);
+        boolean playAgain = true;
+        while (playAgain) {
+            Scanner input = new Scanner(System.in);
+            String playerOne;
+            String playerTwo;
+            System.out.println("Hello Players");
+            System.out.println("Enter Player one's name");
+            playerOne = input.next();
+            System.out.println("Enter Player two's name");
+            playerTwo = input.next();
+            System.out.println("Tic-Tac-Toe:" + playerOne + " vs "+ playerTwo);
 
-        char[][] board = new char[3][3];
-        for(int i=0; i<3;i++){
-            for (int k=0; k<3;k++){
-                board[i][k]='-';
+            char[][] board = new char[3][3];
+            for(int i=0; i<3;i++){
+                for (int k=0; k<3;k++){
+                    board[i][k]='-';
+                }
             }
-        }
 
-        boolean playerOneTurn = true;
-        boolean gameEnded = false;
-        while(!gameEnded) {
+            boolean playerOneTurn = true;
+            boolean gameEnded = false;
+            while(!gameEnded) {
+                drawBoard(board);
+                char symbol = ' ';
+                if (playerOneTurn) {
+                    symbol = 'x';
+                } else {
+                    symbol = 'o';
+                }
+
+                if (playerOneTurn) {
+                    System.out.println(playerOne + "'s turn (x)");
+                } else {
+                    System.out.println(playerTwo + "'s turn (o)");
+                }
+
+                int row = 0;
+                int column = 0;
+
+                while (true) {
+                    System.out.println("Select on vertical axis (1, 2, or 3): ");
+                    row = input.nextInt()-1;
+                    System.out.println("Select on horizontal axis (1, 2, or 3): ");
+                    column = input.nextInt()-1;
+
+                    //Row and Column authenticator
+                    if (row < 0 || column < 0 || row > 2 || column > 2) {
+                        System.out.println("Out of bounds");
+                    } else if (board[row][column] != '-') {
+                        System.out.println("Spot already selected");
+                    } else {
+                        break;
+                    }
+                }
+                board[row][column] = symbol;
+
+                if (hasWon(board) == 'x') {
+                    System.out.println(playerOne + " has won!");
+                    gameEnded = true;
+                } else if (hasWon(board) == 'o') {
+                    System.out.println(playerTwo + " has won!");
+                    gameEnded = true;
+                }else{
+                    if (hasTied(board)) {
+                        System.out.println("You guys have tied");
+                        gameEnded = true;
+                    } else {
+                        playerOneTurn = !playerOneTurn;
+                    }
+                }
+            }
             drawBoard(board);
-            char symbol = ' ';
-            if (playerOneTurn) {
-                symbol = 'x';
+
+            System.out.println("If you want to play again, type Yes, else type No");
+            if (input.next().equals("Yes")) {
+                playAgain = true;
             } else {
-                symbol = 'o';
-            }
-
-            if (playerOneTurn) {
-                System.out.println(playerOne + "'s turn (x)");
-            } else {
-                System.out.println(playerTwo + "'s turn (o)");
-            }
-
-            int row = 0;
-            int column = 0;
-
-            while (true) {
-                System.out.println("Select a row (0, 1, or 2): ");
-                row = input.nextInt();
-                System.out.println("Select a column (0, 1, or 2): ");
-                column = input.nextInt();
-
-                //Row and Column authenticator
-                if (row < 0 || column < 0 || row > 2 || column > 2) {
-                    System.out.println("Out of bounds");
-                } else if (board[row][column] != '-') {
-                    System.out.println("Spot already selected");
+                if (input.next().equals("No")) {
+                    playAgain = false;
+                    gameEnded = true;
                 } else {
-                    break;
+                    gameEnded = true;
                 }
-            }
-            board[row][column] = symbol;
 
-            if (hasWon(board) == 'x') {
-                System.out.println(playerOne + " has won!");
-                gameEnded = true;
-            } else if (hasWon(board) == 'o') {
-                System.out.println(playerTwo + " has won!");
-                gameEnded = true;
-            }else{
-                if (hasTied(board)) {
-                    System.out.println("You guys have tied");
-                } else {
-                    playerOneTurn = !playerOneTurn;
-                }
             }
         }
-        drawBoard(board);
     }
-    
-        public static void drawBoard(char[][] board) {
+
+    public static void drawBoard(char[][] board) {
         for(int i=0; i<3;i++){
             for (int k=0; k<3;k++){
                 System.out.print(board[i][k]);
